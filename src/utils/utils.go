@@ -12,8 +12,8 @@ func AddTodos(todo model.Todo, slices []model.Todo) []model.Todo {
 	return append(slices, todo)
 }
 
-func SaveTodosCSV(todos []model.Todo) error {
-	file, err := os.Create("output.csv")
+func SaveTodosCSV(todos []model.Todo, filename string) error {
+	file, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
@@ -27,8 +27,8 @@ func SaveTodosCSV(todos []model.Todo) error {
 	return nil
 }
 
-func LoadTodosCSV() (t []model.Todo, err error) {
-	file, err := os.Open("output.csv")
+func LoadTodosCSV(filename string) (t []model.Todo, err error) {
+	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}

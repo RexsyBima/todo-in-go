@@ -33,7 +33,7 @@ func main() {
 	const versionName string = "go version go1.24.1 linux/amd64"
 	var timeNow string = time.Now().Format("02/01/2006 15:04:05 MST")
 	menu.ShowIntro(appName, stackName, firstName, lastName, timeNow, versionName)
-	todos, _ := utils.LoadTodosCSV()
+	todos, _ := utils.LoadTodosCSV("todo_app.csv")
 	for {
 		menu.ShowMenu()
 		user_action, _ := menu.ParseUserInput("Please enter a user action: ")
@@ -134,8 +134,12 @@ func main() {
 			fmt.Printf("todo count is %v", len(todos))
 			fmt.Printf("%v", todos)
 		case menu.MenuSave:
-			utils.SaveTodosCSV(todos)
-			fmt.Println("all todos has been saved to output.csv")
+			if len(todos) < 1 {
+				fmt.Println("Todos are empty")
+				break
+			}
+			utils.SaveTodosCSV(todos, "todo_app.csv")
+			fmt.Println("all todos has been saved to todo_app.csv")
 		case menu.MenuQuit:
 			os.Exit(1)
 		default:
