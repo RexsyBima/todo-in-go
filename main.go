@@ -3,6 +3,7 @@ package main
 import (
 	// "errors"
 	"fmt"
+	"slices"
 	"time"
 	"todo_app/src/model"
 	"todo_app/src/utils"
@@ -33,6 +34,7 @@ func main() {
 	menu.ShowIntro(appName, stackName, firstName, lastName, timeNow, versionName)
 	menu.ShowMenu()
 	var todos []model.Todo
+	todos = append(todos, model.Todo{"test", false, model.NotImportant, time.Now()})
 	user_action, _ := menu.ParseUserInput("Please enter a user action: ")
 	// TODO: implement the user action, save them to slice
 	switch user_action {
@@ -42,7 +44,6 @@ func main() {
 			todos = utils.AddTodos(todo, todos)
 		} else {
 			fmt.Println("todo is not added because its title is empty")
-
 		}
 	case menu.MenuAddMany:
 		for {
@@ -62,7 +63,7 @@ func main() {
 	case menu.MenuView:
 		// TODO: add a load and save data feature function
 		for i, v := range todos {
-			fmt.Println(i, v.GetDetail())
+			fmt.Println(fmt.Sprintf("%v.", i+1), v.GetDetail())
 		}
 	case menu.MenuUpdate:
 		var user_input int
@@ -71,15 +72,43 @@ func main() {
 			break
 		}
 		for i, v := range todos {
-			fmt.Println(i, v.GetDetail())
+			fmt.Println(fmt.Sprintf("%v.", i+1), v.GetDetail())
 		}
 		fmt.Println("Please enter a todo number to update: ")
 		_, err := fmt.Scanln(&user_input)
 		if err != nil || user_input < 1 || user_input > len(todos) {
 			fmt.Printf("Invalid input, please enter a valid integer (from 1 to %v)\n", len(todos))
+			break
 		}
+		todo := CreateTodo()
+		todos[user_input-1] = todo
+		fmt.Printf("Todo %v has been updated\n", user_input)
+		todoCount := len(todos)
+		fmt.Printf("todo count is %v", todoCount)
 	case menu.MenuDelete:
-		panic("this shit has not been emplemented yet")
+		var user_input int
+		for i, v := range todos {
+			fmt.Println(fmt.Sprintf("%v.", i+1), v.GetDetail())
+		}
+		fmt.Printf("Please enter a todo number to delete: ")
+		_, err := fmt.Scanln(&user_input)
+		if err != nil || user_input < 1 || user_input > len(todos) {
+			fmt.Printf("Invalid input, please enter a valid integer (from 1 to %v)\n", len(todos))
+			break
+		}
+		todos = slices.Delete(todos, user_input-1, user_input)
+		fmt.Printf("Todo %v has been deleted\n", user_input)
+		todoCount := len(todos)
+		fmt.Printf("todo count is %v", todoCount)
+	case menu.MenuDeleteAll:
+		if len(todos) == 0 {
+			fmt.Printf("Todos are empty")
+			break
+		}
+		todos = make([]model.Todo, 0)
+		fmt.Println("all todos has been cleared")
+		fmt.Printf("todo count is %v", len(todos))
+		fmt.Printf("%v", todos)
 	case menu.MenuSave:
 		panic("this shit has not been emplemented yet")
 	case menu.MenuQuit:
@@ -87,12 +116,5 @@ func main() {
 	default:
 		panic("this shit has not been emplemented yet")
 	}
-	// var todo string
-	// fmt.Scanln(&todo)
-	for i, v := range todos {
-		fmt.Println(fmt.Sprintf("%v.", i+1), v.GetDetail())
-	}
-	todoCount := len(todos)
-	fmt.Printf("todo count is %v", todoCount)
 	fmt.Println()
 }

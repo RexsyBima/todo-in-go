@@ -5,13 +5,14 @@ import "fmt"
 type Menu int
 
 const (
-	MenuAdd     Menu = iota
-	MenuAddMany Menu = iota
-	MenuView    Menu = iota
-	MenuUpdate  Menu = iota
-	MenuDelete  Menu = iota
-	MenuSave    Menu = iota
-	MenuQuit    Menu = iota
+	MenuAdd       Menu = iota
+	MenuAddMany   Menu = iota
+	MenuView      Menu = iota
+	MenuUpdate    Menu = iota
+	MenuDelete    Menu = iota
+	MenuDeleteAll Menu = iota
+	MenuSave      Menu = iota
+	MenuQuit      Menu = iota
 )
 
 func ShowMenu() {
@@ -19,7 +20,8 @@ func ShowMenu() {
 	fmt.Printf("%v. Add many todo\n", MenuAddMany+1)
 	fmt.Printf("%v. View\n", MenuView+1)
 	fmt.Printf("%v. Update\n", MenuUpdate+1)
-	fmt.Printf("%v. Delete\n", MenuDelete+1)
+	fmt.Printf("%v. Delete a todo\n", MenuDelete+1)
+	fmt.Printf("%v. Delete all todos\n", MenuDeleteAll+1)
 	fmt.Printf("%v. Save\n", MenuSave+1)
 	fmt.Printf("%v. Quit\n", MenuQuit+1)
 }
