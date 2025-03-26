@@ -13,6 +13,7 @@ import (
 )
 
 func CreateTodo(title string, done bool, status model.StatusLevel, owner model.Owner) model.Todo {
+	fmt.Println(title)
 	return model.Todo{Title: title, Done: done, Status: status, Created: time.Now(), Owner: owner}
 }
 
