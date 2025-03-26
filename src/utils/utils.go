@@ -20,9 +20,9 @@ func SaveTodosCSV(todos []model.Todo, filename string) error {
 	writer := csv.NewWriter(file)
 	defer file.Close()
 	defer writer.Flush()
-	writer.Write([]string{"Title", "Done", "Status", "Created"})
+	writer.Write([]string{"Title", "Done", "Status", "Created", "Username", "admin"})
 	for _, user := range todos {
-		writer.Write([]string{user.Title, strconv.FormatBool(user.Done), strconv.Itoa(int(user.Status)), user.Created.Format("02/01/2006 15:04:05 MST")})
+		writer.Write([]string{user.Title, strconv.FormatBool(user.Done), strconv.Itoa(int(user.Status)), user.Created.Format("02/01/2006 15:04:05 MST"), user.Name, strconv.FormatBool(user.Admin)})
 	}
 	return nil
 }

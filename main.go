@@ -5,32 +5,30 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"strconv"
 	"time"
 	"todo_app/src/model"
 	"todo_app/src/utils"
 	"todo_app/src/utils/menu"
 )
 
-func CreateTodo() model.Todo {
-	var todo model.Todo
-	fmt.Println("enter todo title: ")
-	fmt.Scanln(&todo.Title)
-	fmt.Println("enter todo status, 0 for not important and 1 for important: ")
-	_, err := fmt.Scanln(&todo.Status)
-	if err != nil || todo.Status < 0 || todo.Status > 2 {
-		fmt.Println("invalid todo status input, default to 'undefined'")
-		todo.Status = 0
-	}
-	todo.Created = time.Now()
-	return todo
+func CreateTodo(title string, done bool, status model.StatusLevel, owner model.Owner) model.Todo {
+	return model.Todo{Title: title, Done: done, Status: status, Created: time.Now(), Owner: owner}
+}
+
+func CreateName(i string) string {
+	return i
 }
 
 func main() {
+	var versionNamefunc func(string) string
 	const firstName string = "Rexsy"
 	const lastName string = "Bima"
 	const appName string = "Todo App"
 	const stackName string = "Golang"
-	const versionName string = "go version go1.24.1 linux/amd64"
+	user := model.Owner{Name: firstName, Admin: true}
+	versionNamefunc = CreateName
+	versionName := versionNamefunc("1.0.0")
 	var timeNow string = time.Now().Format("02/01/2006 15:04:05 MST")
 	menu.ShowIntro(appName, stackName, firstName, lastName, timeNow, versionName)
 	todos, _ := utils.LoadTodosCSV("todo_app.csv")
@@ -40,7 +38,17 @@ func main() {
 		// TODO: implement the user action, save them to slice
 		switch user_action {
 		case menu.MenuAdd:
-			todo := CreateTodo()
+			var title string
+			var status int
+			fmt.Println("enter todo title: ")
+			fmt.Scanln(&title)
+			fmt.Println("enter todo status, 0 for not important and 1 for important: ")
+			_, err := fmt.Scanln(&status)
+			if err != nil || status < 0 || status > 2 {
+				fmt.Println("invalid todo status input, default to 'undefined'")
+				status = 0
+			}
+			todo := CreateTodo(title, false, model.StatusLevel(status), user)
 			if todo.Title != "" && todo.Title != "0" {
 				todos = utils.AddTodos(todo, todos)
 			} else {
@@ -48,7 +56,17 @@ func main() {
 			}
 		case menu.MenuAddMany:
 			for {
-				todo := CreateTodo()
+				var title string
+				var status int
+				fmt.Println("enter todo title: ")
+				fmt.Scanln(&title)
+				fmt.Println("enter todo status, 0 for not important and 1 for important: ")
+				_, err := fmt.Scanln(&status)
+				if err != nil || status < 0 || status > 2 {
+					fmt.Println("invalid todo status input, default to 'undefined'")
+					status = 0
+				}
+				todo := CreateTodo(title, false, model.StatusLevel(status), user)
 				if todo.Title != "" && todo.Title != "0" {
 					todos = append(todos, todo)
 				}
@@ -86,7 +104,9 @@ func main() {
 		case menu.MenuView:
 			fmt.Println("-----------------------------------------------")
 			for i, v := range todos {
-				fmt.Println(fmt.Sprintf("%v.", i+1), v.GetDetail())
+				func(i int, v model.Todo) {
+					fmt.Println(fmt.Sprintf("%v.", i+1), v.GetDetail())
+				}(i, v)
 			}
 			fmt.Println("-----------------------------------------------")
 		case menu.MenuUpdate:
@@ -104,8 +124,24 @@ func main() {
 				fmt.Printf("Invalid input, please enter a valid integer (from 1 to %v)\n", len(todos))
 				break
 			}
-			todo := CreateTodo()
-			todos[user_input-1] = todo
+
+			var title string
+			var status int
+			var done string
+			fmt.Println("enter todo title: ")
+			fmt.Scanln(&title)
+			fmt.Println("enter is done?")
+			fmt.Scanln(&done)
+			fmt.Println("enter todo status, 0 for not important and 1 for important: ")
+			_, err = fmt.Scanln(&status)
+			if err != nil || status < 0 || status > 2 {
+				fmt.Println("invalid todo status input, default to 'undefined'")
+				status = 0
+			}
+			// todo := CreateTodo(title, false, model.StatusLevel(status), user)
+			// todo := todos[user_input-1]
+			doneConvert, _ := strconv.ParseBool(done)
+			todos[user_input-1].Update(title, doneConvert, model.Important)
 			fmt.Printf("Todo %v has been updated\n", user_input)
 			todoCount := len(todos)
 			fmt.Printf("todo count is %v", todoCount)
@@ -143,7 +179,7 @@ func main() {
 		case menu.MenuQuit:
 			os.Exit(1)
 		default:
-			os.Exit(1)
+			fmt.Println("invalid input")
 		}
 	}
 }
