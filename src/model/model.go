@@ -6,6 +6,13 @@ import (
 )
 
 type StatusLevel int
+type Info interface {
+	GetDetail() string
+}
+
+func GetDetail(i Info) string {
+	return i.GetDetail()
+}
 
 const (
 	Undefined StatusLevel = iota

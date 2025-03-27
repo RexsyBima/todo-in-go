@@ -13,7 +13,6 @@ import (
 )
 
 func CreateTodo(title string, done bool, status model.StatusLevel, owner model.Owner) model.Todo {
-	fmt.Println(title)
 	return model.Todo{Title: title, Done: done, Status: status, Created: time.Now(), Owner: owner}
 }
 
@@ -149,7 +148,7 @@ func main() {
 		case menu.MenuDelete:
 			var user_input int
 			for i, v := range todos {
-				fmt.Println(fmt.Sprintf("%v.", i+1), v.GetDetail())
+				fmt.Println(fmt.Sprintf("%v.", i+1), model.GetDetail(v))
 			}
 			fmt.Printf("Please enter a todo number to delete: ")
 			_, err := fmt.Scanln(&user_input)
