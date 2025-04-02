@@ -27,7 +27,7 @@ func SaveTodosCSV(todos []model.Todo, filename string) error {
 	return nil
 }
 
-func LoadTodosCSV(filename string) (t []model.Todo, err error) {
+func LoadTodosCSV(filename string) (t model.Todos, err error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err

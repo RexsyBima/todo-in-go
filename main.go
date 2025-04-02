@@ -4,7 +4,6 @@ import (
 	// "errors"
 	"fmt"
 	"os"
-	"slices"
 	"strconv"
 	"time"
 	"todo_app/src/model"
@@ -90,7 +89,7 @@ func main() {
 			}
 			fmt.Println("Please enter a todo number to mark it done (vice versa): ")
 			_, err := fmt.Scanln(&user_input)
-			if err != nil || user_input < 1 || user_input > len(todos) {
+			if err != nil || todos.ValidateIndex(user_input-1) == false {
 				fmt.Printf("Invalid input, please enter a valid integer (from 1 to %v)\n", len(todos))
 				break
 			}
@@ -144,7 +143,7 @@ func main() {
 			todos[user_input-1].Update(title, doneConvert, model.Important)
 			fmt.Printf("Todo %v has been updated\n", user_input)
 			todoCount := len(todos)
-			fmt.Printf("todo count is %v", todoCount)
+			fmt.Printf("todo count is %v \n", todoCount)
 		case menu.MenuDelete:
 			var user_input int
 			for i, v := range todos {
@@ -152,20 +151,21 @@ func main() {
 			}
 			fmt.Printf("Please enter a todo number to delete: ")
 			_, err := fmt.Scanln(&user_input)
-			if err != nil || user_input < 1 || user_input > len(todos) {
+			if err != nil || todos.ValidateIndex(user_input-1) == false {
 				fmt.Printf("Invalid input, please enter a valid integer (from 1 to %v)\n", len(todos))
 				break
 			}
-			todos = slices.Delete(todos, user_input-1, user_input)
+			// todos = slices.Delete(todos, user_input-1, user_input)
+			todos.DeleteTodo(user_input - 1)
 			fmt.Printf("Todo %v has been deleted\n", user_input)
 			todoCount := len(todos)
-			fmt.Printf("todo count is %v", todoCount)
+			fmt.Printf("todo count is %v \n", todoCount)
 		case menu.MenuDeleteAll:
 			if len(todos) == 0 {
 				fmt.Printf("Todos are empty")
 				break
 			}
-			todos = make([]model.Todo, 0)
+			todos = make(model.Todos, 0)
 			fmt.Println("all todos has been cleared")
 			fmt.Printf("todo count is %v", len(todos))
 			fmt.Printf("%v", todos)

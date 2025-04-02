@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"slices"
 	"time"
 )
 
@@ -31,6 +32,19 @@ type Todo struct {
 	Status  StatusLevel
 	Created time.Time
 	Owner
+}
+
+type Todos []Todo
+
+func (t Todos) ValidateIndex(index int) bool {
+	return index >= 0 && index < len(t)
+}
+
+func (t *Todos) DeleteTodo(index int) {
+	if !t.ValidateIndex(index) {
+		return
+	}
+	*t = slices.Delete(*t, index, index+1)
 }
 
 func (t Todo) GetDetail() string {
